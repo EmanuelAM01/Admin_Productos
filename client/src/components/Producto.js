@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams, useHistory} from "react-router-dom";
 import axios from "axios";
 
 const Producto = () => {
     const {id} = useParams();
     const [producto, setProducto] = useState({});
+    const history = useHistory();
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/productos/"+id)
@@ -13,6 +14,14 @@ const Producto = () => {
             })
             .catch(err => console.log(err));
     }, [id]);
+
+    const borrarProducto = id => {
+        axios.delete("http://localhost:8000/api/productos/"+id)
+            .then(res =>{
+                history.push("/")
+            })
+            .catch(err => console.log(err));
+    }
 
     return(
         <div className="card">
@@ -23,6 +32,7 @@ const Producto = () => {
                     {producto.descripcion}
                 </p>
                 <Link to="/" className="btn btn-primary">Regresar</Link>
+                <button className="btn btn-danger" onClick={() => borrarProducto(producto._id)}>Eliminar</button>
             </div>
         </div>
     )
